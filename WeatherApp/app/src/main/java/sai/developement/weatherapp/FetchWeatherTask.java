@@ -66,6 +66,10 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
         String units = "metric";
         int numDays = 7;
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String location = prefs.getString(mContext.getString(R.string.pref_location_key),
+                mContext.getString(R.string.pref_location_default));
+
         try {
             final String FORECAST_BASE_URL =
                     "http://api.openweathermap.org/data/2.5/forecast/daily?";
@@ -76,7 +80,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
             final String APPID_PARAM = "APPID";
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, "Raleigh,US")
+                    .appendQueryParameter(QUERY_PARAM, location)
                     .appendQueryParameter(FORMAT_PARAM, format)
                     .appendQueryParameter(UNITS_PARAM, units)
                     .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
