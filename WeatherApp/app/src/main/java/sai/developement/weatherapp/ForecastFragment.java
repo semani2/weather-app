@@ -58,6 +58,7 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather() {
-        //TODO :: Stub for now, responsible for calling the fetch weather task to fetch weather data
+        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
+        weatherTask.execute();
     }
 }
