@@ -1,4 +1,4 @@
-package sai.developement.weatherapp;
+package sai.developement.weatherapp.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+
+import sai.developement.weatherapp.Constants;
+import sai.developement.weatherapp.R;
 
 /**
  * Created by sai on 10/21/16.

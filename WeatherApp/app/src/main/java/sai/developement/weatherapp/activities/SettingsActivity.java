@@ -1,10 +1,11 @@
-package sai.developement.weatherapp;
+package sai.developement.weatherapp.activities;
 
+import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+
+import sai.developement.weatherapp.R;
 
 public class SettingsActivity extends PreferenceActivity
         implements Preference.OnPreferenceChangeListener {

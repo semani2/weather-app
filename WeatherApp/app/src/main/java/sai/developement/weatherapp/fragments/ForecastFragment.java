@@ -1,4 +1,4 @@
-package sai.developement.weatherapp;
+package sai.developement.weatherapp.fragments;
 
 
 import android.content.Intent;
@@ -17,10 +17,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import sai.developement.weatherapp.asynctasks.FetchWeatherTask;
+import sai.developement.weatherapp.adapters.ForecastAdapter;
+import sai.developement.weatherapp.R;
+import sai.developement.weatherapp.Utils;
+import sai.developement.weatherapp.activities.SettingsActivity;
 import sai.developement.weatherapp.data.WeatherContract;
 
 import static sai.developement.weatherapp.Constants.FORECAST_COLUMNS;
@@ -60,12 +64,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         ListView forecastListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         forecastListView.setEmptyView(mEmptyListTextView);
         forecastListView.setAdapter(mForecastAdapter);
-        forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO :: For later
-            }
-        });
 
         return rootView;
     }
@@ -86,7 +84,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String locationSetting = Utils.getPreferredLocation(getActivity());
 
-        // Sort order:  Ascending, by date.
         String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
         Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
                 locationSetting, System.currentTimeMillis());

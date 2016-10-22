@@ -1,4 +1,4 @@
-package sai.developement.weatherapp;
+package sai.developement.weatherapp.asynctasks;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -22,8 +22,13 @@ import org.json.JSONObject;
 
 import java.util.Vector;
 
+import sai.developement.weatherapp.BuildConfig;
+import sai.developement.weatherapp.R;
+import sai.developement.weatherapp.volley.WeatherRequestQueue;
 import sai.developement.weatherapp.data.WeatherContract;
 import sai.developement.weatherapp.data.WeatherContract.WeatherEntry;
+
+import static sai.developement.weatherapp.Constants.*;
 
 /**
  * Created by sai on 10/21/16.
@@ -79,14 +84,6 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
         final String location = prefs.getString(mContext.getString(R.string.pref_location_key),
                 mContext.getString(R.string.pref_location_default));
 
-        final String FORECAST_BASE_URL =
-                "http://api.openweathermap.org/data/2.5/forecast/daily?";
-        final String QUERY_PARAM = "q";
-        final String FORMAT_PARAM = "mode";
-        final String UNITS_PARAM = "units";
-        final String DAYS_PARAM = "cnt";
-        final String APPID_PARAM = "APPID";
-
         Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                 .appendQueryParameter(QUERY_PARAM, location)
                 .appendQueryParameter(FORMAT_PARAM, format)
@@ -118,26 +115,6 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
     private void getWeatherDataFromJson(JSONObject jsonObject, String locationSetting)
             throws JSONException{
-        final String OWM_CITY = "city";
-        final String OWM_CITY_NAME = "name";
-
-        final String OWM_LIST = "list";
-
-        final String OWM_PRESSURE = "pressure";
-        final String OWM_HUMIDITY = "humidity";
-        final String OWM_WINDSPEED = "speed";
-        final String OWM_WIND_DIRECTION = "deg";
-
-        // All temperatures are children of the "temp" object.
-        final String OWM_TEMPERATURE = "temp";
-        final String OWM_MAX = "max";
-        final String OWM_MIN = "min";
-
-        final String OWM_WEATHER = "weather";
-        final String OWM_DESCRIPTION = "main";
-        final String OWM_WEATHER_ID = "id";
-        final String OWM_WEATHER_ICON = "icon";
-
         try {
             JSONArray weatherArray = jsonObject.getJSONArray(OWM_LIST);
 
@@ -146,7 +123,6 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
             long locationId = addLocation(locationSetting, cityName);
 
-            // Insert the new weather information into the database
             Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
 
             Time dayTime = new Time();
@@ -158,31 +134,19 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
             for(int i = 0; i < weatherArray.length(); i++) {
                 long dateTime;
-                double pressure;
-                int humidity;
-                double windSpeed;
-                double windDirection;
-
                 double high;
                 double low;
 
                 String description;
-                int weatherId;
                 String icon;
 
                 JSONObject dayForecast = weatherArray.getJSONObject(i);
 
                 dateTime = dayTime.setJulianDay(julianStartDay+i);
 
-                pressure = dayForecast.getDouble(OWM_PRESSURE);
-                humidity = dayForecast.getInt(OWM_HUMIDITY);
-                windSpeed = dayForecast.getDouble(OWM_WINDSPEED);
-                windDirection = dayForecast.getDouble(OWM_WIND_DIRECTION);
-
                 JSONObject weatherObject =
                         dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
                 description = weatherObject.getString(OWM_DESCRIPTION);
-                weatherId = weatherObject.getInt(OWM_WEATHER_ID);
                 icon = weatherObject.getString(OWM_WEATHER_ICON);
 
 
