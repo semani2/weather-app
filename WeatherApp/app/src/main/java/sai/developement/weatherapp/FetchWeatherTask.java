@@ -180,6 +180,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
         final String OWM_WEATHER = "weather";
         final String OWM_DESCRIPTION = "main";
         final String OWM_WEATHER_ID = "id";
+        final String OWM_WEATHER_ICON = "icon";
 
         try {
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
@@ -216,6 +217,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
                 String description;
                 int weatherId;
+                String icon;
 
                 JSONObject dayForecast = weatherArray.getJSONObject(i);
 
@@ -230,6 +232,8 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
                         dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
                 description = weatherObject.getString(OWM_DESCRIPTION);
                 weatherId = weatherObject.getInt(OWM_WEATHER_ID);
+                icon = weatherObject.getString(OWM_WEATHER_ICON);
+
 
                 JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
                 high = temperatureObject.getDouble(OWM_MAX);
@@ -247,6 +251,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
                 weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, low);
                 weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, description);
                 weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, weatherId);
+                weatherValues.put(WeatherEntry.COLUMN_ICON, icon);
 
                 cVVector.add(weatherValues);
             }

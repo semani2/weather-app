@@ -82,6 +82,8 @@ public class WeatherContract {
 
         public static final String COLUMN_DEGREES = "degrees";
 
+        public static final String COLUMN_ICON = "icon";
+
         public static Uri buildWeatherUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
