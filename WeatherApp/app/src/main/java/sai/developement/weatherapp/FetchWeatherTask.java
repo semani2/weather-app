@@ -110,7 +110,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e(LOG_TAG, error.getMessage());
             }
         });
 
