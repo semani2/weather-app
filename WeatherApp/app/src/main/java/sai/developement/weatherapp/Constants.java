@@ -31,4 +31,7 @@ public class Constants {
     public static final int COL_COORD_LAT = 7;
     public static final int COL_COORD_LONG = 8;
     public static final int COL_WEATHER_ICON = 9;
+
+    // Weather API Constants
+    public static final String WEATHER_ICON_BASE_URI = "http://openweathermap.org/img/w/";
 }
