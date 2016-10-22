@@ -48,6 +48,5 @@ public class Constants {
 
     public static final String OWM_WEATHER = "weather";
     public static final String OWM_DESCRIPTION = "main";
-    public static final String OWM_WEATHER_ID = "id";
     public static final String OWM_WEATHER_ICON = "icon";
 }

@@ -109,12 +109,12 @@ public class WeatherProvider extends ContentProvider {
                         String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // "weather/*"
+
             case WEATHER_WITH_LOCATION: {
                 retCursor = getWeatherByLocationSetting(uri, projection, sortOrder);
                 break;
             }
-            // "weather"
+
             case WEATHER: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         WeatherContract.WeatherEntry.TABLE_NAME,
@@ -127,7 +127,7 @@ public class WeatherProvider extends ContentProvider {
                 );
                 break;
             }
-            // "location"
+
             case LOCATION: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         WeatherContract.LocationEntry.TABLE_NAME,
