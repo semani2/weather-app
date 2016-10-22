@@ -43,9 +43,6 @@ public class WeatherContract {
 
         public static final String COLUMN_CITY_NAME = "city_name";
 
-        public static final String COLUMN_COORD_LAT = "coord_lat";
-        public static final String COLUMN_COORD_LONG = "coord_long";
-
         public static Uri buildLocationUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
@@ -67,20 +64,10 @@ public class WeatherContract {
 
         public static final String COLUMN_DATE = "date";
 
-        public static final String COLUMN_WEATHER_ID = "weather_id";
-
         public static final String COLUMN_SHORT_DESC = "short_desc";
 
         public static final String COLUMN_MIN_TEMP = "min";
         public static final String COLUMN_MAX_TEMP = "max";
-
-        public static final String COLUMN_HUMIDITY = "humidity";
-
-        public static final String COLUMN_PRESSURE = "pressure";
-
-        public static final String COLUMN_WIND_SPEED = "wind";
-
-        public static final String COLUMN_DEGREES = "degrees";
 
         public static final String COLUMN_ICON = "icon";
 
@@ -88,20 +75,11 @@ public class WeatherContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildWeatherLocation(String locationSetting) {
-            return CONTENT_URI.buildUpon().appendPath(locationSetting).build();
-        }
-
         public static Uri buildWeatherLocationWithStartDate(
                 String locationSetting, long startDate) {
             long normalizedDate = normalizeDate(startDate);
             return CONTENT_URI.buildUpon().appendPath(locationSetting)
                     .appendQueryParameter(COLUMN_DATE, Long.toString(normalizedDate)).build();
-        }
-
-        public static Uri buildWeatherLocationWithDate(String locationSetting, long date) {
-            return CONTENT_URI.buildUpon().appendPath(locationSetting)
-                    .appendPath(Long.toString(normalizeDate(date))).build();
         }
 
         public static String getLocationSettingFromUri(Uri uri) {

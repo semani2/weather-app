@@ -38,7 +38,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
         this.mContext = context;
     }
 
-    private long addLocation(String locationSetting, String cityName, double lat, double lon) {
+    private long addLocation(String locationSetting, String cityName) {
         long locationId;
 
         Cursor locationCursor = mContext.getContentResolver().query(
@@ -56,8 +56,6 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
             locationValues.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
             locationValues.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
-            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
 
             Uri insertedUri = mContext.getContentResolver().insert(
                     WeatherContract.LocationEntry.CONTENT_URI,
@@ -122,10 +120,6 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
             throws JSONException{
         final String OWM_CITY = "city";
         final String OWM_CITY_NAME = "name";
-        final String OWM_COORD = "coord";
-
-        final String OWM_LATITUDE = "lat";
-        final String OWM_LONGITUDE = "lon";
 
         final String OWM_LIST = "list";
 
@@ -150,11 +144,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
             JSONObject cityJson = jsonObject.getJSONObject(OWM_CITY);
             String cityName = cityJson.getString(OWM_CITY_NAME);
 
-            JSONObject cityCoord = cityJson.getJSONObject(OWM_COORD);
-            double cityLatitude = cityCoord.getDouble(OWM_LATITUDE);
-            double cityLongitude = cityCoord.getDouble(OWM_LONGITUDE);
-
-            long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
+            long locationId = addLocation(locationSetting, cityName);
 
             // Insert the new weather information into the database
             Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
@@ -204,14 +194,10 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
                 weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationId);
                 weatherValues.put(WeatherEntry.COLUMN_DATE, dateTime);
-                weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, humidity);
-                weatherValues.put(WeatherEntry.COLUMN_PRESSURE, pressure);
-                weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
-                weatherValues.put(WeatherEntry.COLUMN_DEGREES, windDirection);
+
                 weatherValues.put(WeatherEntry.COLUMN_MAX_TEMP, high);
                 weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, low);
                 weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, description);
-                weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, weatherId);
                 weatherValues.put(WeatherEntry.COLUMN_ICON, icon);
 
                 cVVector.add(weatherValues);

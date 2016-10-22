@@ -15,9 +15,6 @@ public class Constants {
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
             WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
-            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
-            WeatherContract.LocationEntry.COLUMN_COORD_LAT,
-            WeatherContract.LocationEntry.COLUMN_COORD_LONG,
             WeatherContract.WeatherEntry.COLUMN_ICON
     };
 
@@ -27,10 +24,7 @@ public class Constants {
     public static final int COL_WEATHER_MAX_TEMP = 3;
     public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_LOCATION_SETTING = 5;
-    public static final int COL_WEATHER_CONDITION_ID = 6;
-    public static final int COL_COORD_LAT = 7;
-    public static final int COL_COORD_LONG = 8;
-    public static final int COL_WEATHER_ICON = 9;
+    public static final int COL_WEATHER_ICON = 6;
 
     // Weather API Constants
     public static final String WEATHER_ICON_BASE_URI = "http://openweathermap.org/img/w/";
