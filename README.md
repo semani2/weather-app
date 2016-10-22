@@ -18,7 +18,11 @@ https://goo.gl/photos/BtnLEjYeXM2da8JH8
 - Third party libraries: Picasso (for loading icons), Volley(for network calls to the weather Api), stetho(to inspect the database - debug purposes).
 - SQLite database used to store weather data. Content providers implemeted to access weather data from the DB.
 
-### Things to do
+### Screenshots
+Screenshots for the app can be viewed here:
+https://goo.gl/photos/SyVG9Vu4Z7E1GwRTA
+
+### Possible future updates
 - Implement a sync adapter to fetch weather data.
 - Add a detail screen to view more details about the weather.
 - Add support for tablets, may be a master-detail layout.
