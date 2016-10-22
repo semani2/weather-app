@@ -18,6 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity"></activity>
+
+        <provider
+            android:authorities="sai.developement.weatherapp"
+            android:name=".data.WeatherProvider" />
     </application>
 
 </manifest>
