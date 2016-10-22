@@ -11,17 +11,15 @@ import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Vector;
 
 import sai.developement.weatherapp.data.WeatherContract;
@@ -75,88 +73,52 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-
-        String forecastJsonStr = null;
-
         String format = "json";
         String units = "metric";
         int numDays = 7;
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String location = prefs.getString(mContext.getString(R.string.pref_location_key),
+        final String location = prefs.getString(mContext.getString(R.string.pref_location_key),
                 mContext.getString(R.string.pref_location_default));
 
-        try {
-            final String FORECAST_BASE_URL =
-                    "http://api.openweathermap.org/data/2.5/forecast/daily?";
-            final String QUERY_PARAM = "q";
-            final String FORMAT_PARAM = "mode";
-            final String UNITS_PARAM = "units";
-            final String DAYS_PARAM = "cnt";
-            final String APPID_PARAM = "APPID";
+        final String FORECAST_BASE_URL =
+                "http://api.openweathermap.org/data/2.5/forecast/daily?";
+        final String QUERY_PARAM = "q";
+        final String FORMAT_PARAM = "mode";
+        final String UNITS_PARAM = "units";
+        final String DAYS_PARAM = "cnt";
+        final String APPID_PARAM = "APPID";
 
-            Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, location)
-                    .appendQueryParameter(FORMAT_PARAM, format)
-                    .appendQueryParameter(UNITS_PARAM, units)
-                    .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
-                    .appendQueryParameter(APPID_PARAM, BuildConfig.OPEN_WEATHER_MAP_API_KEY)
-                    .build();
+        Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+                .appendQueryParameter(QUERY_PARAM, location)
+                .appendQueryParameter(FORMAT_PARAM, format)
+                .appendQueryParameter(UNITS_PARAM, units)
+                .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                .appendQueryParameter(APPID_PARAM, BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+                .build();
 
-            URL url = new URL(builtUri.toString());
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                // Nothing to do.
-                return null;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                return null;
-            }
-            forecastJsonStr = buffer.toString();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, builtUri.toString(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
                 try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
+                    getWeatherDataFromJson(response, location);
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                    e.printStackTrace();
                 }
             }
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-        try {
-            getWeatherDataFromJson(forecastJsonStr, location);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }
+            }
+        });
 
-        // This will only happen if there was an error getting or parsing the forecast.
+        WeatherRequestQueue.getInstance(mContext).addToRequestQueue(jsonObjectRequest);
         return null;
     }
 
-    private void getWeatherDataFromJson(String forecastJsonStr, String locationSetting)
+    private void getWeatherDataFromJson(JSONObject jsonObject, String locationSetting)
             throws JSONException{
         final String OWM_CITY = "city";
         final String OWM_CITY_NAME = "name";
@@ -183,10 +145,9 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
         final String OWM_WEATHER_ICON = "icon";
 
         try {
-            JSONObject forecastJson = new JSONObject(forecastJsonStr);
-            JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
+            JSONArray weatherArray = jsonObject.getJSONArray(OWM_LIST);
 
-            JSONObject cityJson = forecastJson.getJSONObject(OWM_CITY);
+            JSONObject cityJson = jsonObject.getJSONObject(OWM_CITY);
             String cityName = cityJson.getString(OWM_CITY_NAME);
 
             JSONObject cityCoord = cityJson.getJSONObject(OWM_COORD);
